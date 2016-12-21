@@ -1,39 +1,21 @@
-.game {
+.Game {
   display: flex;
   flex-direction: row;
   justify-content: center;
   margin-top: 20px;
 }
 
-.game-info {
-  margin-left: 30px;
-  width: 200px;
-}
-
-.game-info span {
-  font-size: 16px;
-  font-weight: bold;
-}
-
-ol, ul {
-  padding-left: 30px;
-}
-
-.board {
+.Game-board .board {
   border: 10px outset #666;
 }
 
-.board-row:after {
+.Game-board .board-row:after {
   clear: both;
   content: "";
   display: table;
 }
 
-.status {
-  margin-bottom: 10px;
-}
-
-.square {
+.Game-board .board-row .square {
   background: #393;
   border: 1px solid #666;
   float: left;
@@ -47,22 +29,32 @@ ol, ul {
   width: 34px;
 }
 
-.square .black {
-  color: #000;
-}
-
-.square .white {
-  color: #fff;
-}
-
-.square .none {
-  display: none;
-}
-
-.square:focus {
+.Game-board .board-row .square:focus {
   outline: none;
 }
 
-.kbd-navigation .square:focus {
-  background: #ddd;
+.Game-board .board-row .square .black {
+  color: #000;
+}
+
+.Game-board .board-row .square .white {
+  color: #fff;
+}
+
+.Game-board .board-row .square .none {
+  display: none;
+}
+
+.Game-info {
+  margin-left: 30px;
+  width: 200px;
+}
+
+.Game-info span {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.Game-info ol, ul {
+  padding-left: 30px;
 }

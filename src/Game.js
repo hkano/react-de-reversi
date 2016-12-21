@@ -24,9 +24,8 @@ class Board extends Component {
       board.push(<div className="board-row">{squares}</div>);
     }
     return (
-      <div>
-        <div className="status">{status}</div>
-        <div className="board">{board}</div>
+      <div className="board">
+        {board}
       </div>
     );
   }
@@ -71,14 +70,14 @@ class Game extends Component {
       status = 'Next player: ' + (this.state.blackIsNext ? '● [先手]' : '○ [後手]');
     }
     return (
-      <div className="game">
-        <div className="game-board">
+      <div className="Game">
+        <div className="Game-board">
           <Board
             squares={current.squares}
             onClick={(i) => this.handleClick(i)}
           />
         </div>
-        <div className="game-info">
+        <div className="Game-info">
           <span>{status}</span>
           <ol>{moves}</ol>
         </div>

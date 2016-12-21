@@ -6,10 +6,10 @@ import './index.css';
 
 ReactDOM.render(
   <App />,
-  document.getElementById('root')
+  document.getElementById('react-app')
 );
 
 ReactDOM.render(
   <Game />,
-  document.getElementById('container')
+  document.getElementById('react-game')
 );
