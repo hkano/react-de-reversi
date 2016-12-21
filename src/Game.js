@@ -9,7 +9,7 @@ function Square(props) {
   );
 }
 
-class Board extends React.Component {
+class Board extends Component {
   renderSquare(i) {
     return <Square value={this.props.squares[i]} onClick={() => this.props.onClick(i)} />;
   }
@@ -37,7 +37,7 @@ class Board extends React.Component {
   }
 }
 
-class Game extends React.Component {
+class Game extends Component {
   constructor() {
     super();
     this.state = {
