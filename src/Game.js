@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import './Game.css';
 
 function Square(props) {
+  const name = props.value ? props.value : 'none';
   return (
     <button className="square" onClick={() => props.onClick()}>
-      {props.value}
+      <span className={name}>●</span>
     </button>
   );
 }
@@ -14,24 +15,18 @@ class Board extends Component {
     return <Square value={this.props.squares[i]} onClick={() => this.props.onClick(i)} />;
   }
   render() {
+    var board = [];
+    for (var row = 0; row < 8; row++) {
+      var squares = [];
+      for (var column = 0; column < 8; column++) {
+        squares.push(this.renderSquare(row * 8 + column));
+      }
+      board.push(<div className="board-row">{squares}</div>);
+    }
     return (
       <div>
         <div className="status">{status}</div>
-        <div className="board-row">
-          {this.renderSquare(0)}
-          {this.renderSquare(1)}
-          {this.renderSquare(2)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(3)}
-          {this.renderSquare(4)}
-          {this.renderSquare(5)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(6)}
-          {this.renderSquare(7)}
-          {this.renderSquare(8)}
-        </div>
+        <div className="board">{board}</div>
       </div>
     );
   }
@@ -40,13 +35,18 @@ class Board extends Component {
 class Game extends Component {
   constructor() {
     super();
+    var squares = Array(64).fill(null);
+    squares[27] = 'black';
+    squares[28] = 'white';
+    squares[35] = 'white';
+    squares[36] = 'black';
     this.state = {
       history: [{
-        squares: Array(9).fill(null),
+        squares: squares,
         values: Array(0)
       }],
       stepNumber: 0,
-      oIsNext: true
+      blackIsNext: true
     };
   }
   render() {
@@ -68,7 +68,7 @@ class Game extends Component {
     if (winner) {
       status = 'Winner: ' + winner;
     } else {
-      status = 'Next player: ' + (this.state.oIsNext ? 'O' : 'X');
+      status = 'Next player: ' + (this.state.blackIsNext ? '● [先手]' : '○ [後手]');
     }
     return (
       <div className="game">
@@ -79,7 +79,7 @@ class Game extends Component {
           />
         </div>
         <div className="game-info">
-          <div>{status}</div>
+          <span>{status}</span>
           <ol>{moves}</ol>
         </div>
       </div>
@@ -93,7 +93,7 @@ class Game extends Component {
     if (calculateWinner(squares) || squares[i]) {
       return;
     }
-    squares[i] = this.state.oIsNext ? 'O' : 'X';
+    squares[i] = this.state.blackIsNext ? 'black' : 'white';
     values[this.state.stepNumber] = i + 1;
     this.setState({
       history: history.concat([{
@@ -101,13 +101,13 @@ class Game extends Component {
         values: values
       }]),
       stepNumber: history.length,
-      oIsNext: !this.state.oIsNext
+      blackIsNext: !this.state.blackIsNext
     });
   }
   jumpTo(step) {
     this.setState({
       stepNumber: step,
-      oIsNext: (step % 2) ? false : true,
+      blackIsNext: (step % 2) ? false : true,
     });
   }
 }
