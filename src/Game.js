@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
 import './Game.css';
 
+const lineCount = 8;
+
+const rowStrings = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20'];
+const columnStrings = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+
 function Square(props) {
   const name = props.value ? props.value : 'none';
   return (
@@ -11,17 +16,18 @@ function Square(props) {
 }
 
 class Board extends Component {
-  renderSquare(i) {
-    return <Square value={this.props.squares[i]} onClick={() => this.props.onClick(i)} />;
+  renderSquare(squareNumber) {
+    return <Square key={"square-" + squareNumber} value={this.props.squares[squareNumber]} onClick={() => this.props.onClick(squareNumber)} />;
   }
   render() {
-    var board = [];
-    for (var row = 0; row < 8; row++) {
-      var squares = [];
-      for (var column = 0; column < 8; column++) {
-        squares.push(this.renderSquare(row * 8 + column));
+    let board = [];
+    for (let row = 0; row < lineCount; row++) {
+      let squares = [];
+      for (let column = 0; column < lineCount; column++) {
+        const squareNumber = row * lineCount + column + 1;
+        squares.push(this.renderSquare(squareNumber));
       }
-      board.push(<div className="board-row">{squares}</div>);
+      board.push(<div key={"board-row-" + (row + 1)} className="board-row">{squares}</div>);
     }
     return (
       <div className="board">
@@ -34,47 +40,53 @@ class Board extends Component {
 class Game extends Component {
   constructor() {
     super();
-    var squares = Array(64).fill(null);
-    squares[27] = 'black';
-    squares[28] = 'white';
-    squares[35] = 'white';
-    squares[36] = 'black';
+    var squares = {};
+    for (let i = 0; i < Math.pow(lineCount, 2); i++) {
+      squares[i + 1] = null;
+    }
+    squares[28] = 'black';
+    squares[29] = 'white';
+    squares[36] = 'white';
+    squares[37] = 'black';
     this.state = {
-      history: [{
-        squares: squares,
-        values: Array(0)
-      }],
-      stepNumber: 0,
-      blackIsNext: true
+      squares: squares,
+      squareNumbers: [0]
     };
   }
   render() {
-    const history = this.state.history;
-    const current = history[this.state.stepNumber];
-    const winner = calculateWinner(current.squares);
-    const moves = history.map((step, move) => {
-      const desc = move ? 'Move #' + move : 'Game start';
-      const value = move ? '(' + current.values[move - 1] + ')' : '';
+    const squares = this.state.squares;
+    const squareNumbers = this.state.squareNumbers;
+    const step = squareNumbers.length - 1;
+    const winner = calculateWinner(squares);
+    const moves = squareNumbers.map((squareNumber, index) => {
+      let description = 'Game start';
+      if (index > 0) {
+        description = ((squareNumber > 0) ? 'Move' : 'Skip') + ': ' + (isBlackMove(index) ? '●' : '○');
+      }
       return (
-        <li key={move}>
-          <a href="#" onClick={() => this.jumpTo(move)}>{desc}</a>
-          {value}
+        <li key={index} value={index}>
+          {/*
+          <a href="#" onClick={() => this.jumpTo(index)}>
+            {description}
+          </a>
+          */}
+          {description}
+          {squareNumber > 0 ? '(' + squarePosition(squareNumber) + ')' : ''}
         </li>
       );
     });
 
-    let status;
+    let status = 'Next player: ' + (isBlackMove(step + 1) ? '● [1st]' : '○ [2nd]');
     if (winner) {
-      status = 'Winner: ' + winner;
-    } else {
-      status = 'Next player: ' + (this.state.blackIsNext ? '● [先手]' : '○ [後手]');
+      status = 'Winner: ' + winner + '!!';
     }
+
     return (
       <div className="Game">
         <div className="Game-board">
           <Board
-            squares={current.squares}
-            onClick={(i) => this.handleClick(i)}
+            squares={squares}
+            onClick={(squareNumber) => this.handleClick(squareNumber)}
           />
         </div>
         <div className="Game-info">
@@ -84,31 +96,49 @@ class Game extends Component {
       </div>
     );
   }
-  handleClick(i) {
-    var history = this.state.history.slice(0, this.state.stepNumber + 1);
-    var current = history[history.length - 1];
-    const squares = current.squares.slice();
-    const values = current.values.slice();
-    if (calculateWinner(squares) || squares[i]) {
+
+  handleClick(squareNumber) {
+    let squares = this.state.squares;
+    let squareNumbers = this.state.squareNumbers;
+    const step = squareNumbers.length; // at clicked
+    if (calculateWinner(squares) || squares[squareNumber]) {
       return;
     }
-    squares[i] = this.state.blackIsNext ? 'black' : 'white';
-    values[this.state.stepNumber] = i + 1;
+    squares[squareNumber] = isBlackMove(step) ? 'black' : 'white';
+    squareNumbers.push(squareNumber);
     this.setState({
-      history: history.concat([{
-        squares: squares,
-        values: values
-      }]),
-      stepNumber: history.length,
-      blackIsNext: !this.state.blackIsNext
+      squares: squares,
+      squareNumbers: squareNumbers
     });
   }
+
+  isPlaceable(squareNumber, squares) {
+
+  }
+
+  // FIXME: not implemented
   jumpTo(step) {
+    let squares = this.state.squares;
+    let squareNumbers = this.state.squareNumbers;
+    for (let i = squareNumbers.length - 1; i > step; i--) {
+      squares[squareNumbers[i]] = null;
+    }
     this.setState({
-      stepNumber: step,
-      blackIsNext: (step % 2) ? false : true,
+      squares: squares,
+      squareNumbers: squareNumbers.slice(0, step + 1)
     });
   }
+}
+
+function isBlackMove(step) {
+  if (step === 0) {
+    return null;
+  }
+  return (step % 2) ? true : false;
+}
+
+function squarePosition(squareNumber) {
+  return rowStrings[Math.floor((squareNumber - 1) / lineCount)] + ', ' + columnStrings[(squareNumber - 1) % lineCount];
 }
 
 function calculateWinner(squares) {
