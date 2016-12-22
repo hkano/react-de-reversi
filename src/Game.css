@@ -55,6 +55,12 @@
   font-weight: bold;
 }
 
+.Game-info .count {
+  font-size: 16px;
+  font-weight: bold;
+  padding: 10px 10px 0;
+}
+
 .Game-info ol, ul {
   padding-left: 30px;
 }
