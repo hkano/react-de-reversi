@@ -4,9 +4,9 @@ import './Game.css';
 const lineCount = 8;
 
 const black = 'black';
-const white =  'white'
+const white =  'white';
 
-const rowStrings = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20'];
+const rowStrings = Array(30).fill(null).map((_, index) => { return index + 1; });
 const columnStrings = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
 
 function Square(props) {
@@ -58,10 +58,34 @@ class Game extends Component {
     };
   }
   render() {
-    const squares = this.state.squares;
-    const squareNumbers = this.state.squareNumbers;
+    let squares = this.state.squares;
+    let squareNumbers = this.state.squareNumbers;
+    let historySquares = this.state.historySquares;
     const step = squareNumbers.length - 1;
-    const winner = calculateWinner(squares);
+
+    let winner = null;
+
+    if (isGameEnd(squares, squareNumbers)) {
+      winner = calculateWinner(squares);
+    } else {
+      const _canPlace = Array(Math.pow(lineCount, 2)).fill(null).some((_, index) => {
+        if (squares[index + 1]) {
+          return false;
+        }
+        return this.canPlace(squares, index + 1, step + 1);
+      });
+      if (!_canPlace) {
+        squareNumbers.push(0);
+        historySquares.push(squares);
+        // TODO: warning.js:36 Warning: setState(...): Cannot update during an existing state transition (such as within `render` or another component's constructor). Render methods should be a pure function of props and state; constructor side-effects are an anti-pattern, but can be moved to `componentWillMount`.
+        this.setState({
+          squares: squares,
+          squareNumbers: squareNumbers,
+          historySquares: historySquares
+        });
+      }
+    }
+
     const moves = squareNumbers.map((squareNumber, index) => {
       let description = 'Game start';
       if (index > 0) {
@@ -72,7 +96,7 @@ class Game extends Component {
           <a href="#" onClick={() => this.jumpTo(index)}>
             {description}
           </a>
-          {squareNumber > 0 ? '(' + squarePosition(squareNumber) + ')' : ''}
+          {squareNumber > 0 ? ' (' + squarePosition(squareNumber) + ') ' : ''}
         </li>
       );
     });
@@ -93,7 +117,7 @@ class Game extends Component {
         <div className="Game-info">
           <span>{status}</span>
           <div className="count">
-            ● : {countBlack(squares)} vs ○ : {countWhite(squares)}
+            ● {countBlack(squares)} - {countWhite(squares)} ○
           </div>
           <ol>{moves}</ol>
         </div>
@@ -101,26 +125,27 @@ class Game extends Component {
     );
   }
 
+  canPlace(squares, squareNumber, step) {
+    return turnSquareNumbers(squares, squareNumber, step).length > 0;
+  }
+
   handleClick(squareNumber) {
     let squares = this.state.squares;
     let squareNumbers = this.state.squareNumbers;
     let historySquares = this.state.historySquares;
     const step = squareNumbers.length; // at clicked
-    if (calculateWinner(squares) || squares[squareNumber]) {
+    if (squares[squareNumber] || !this.canPlace(squares, squareNumber, step)) {
       return;
     }
-    squares[squareNumber] = isBlackMove(step) ? black : white;
+    squares[squareNumber] = color(step);
+    squares = turnSquare(squares, squareNumber, step);
     squareNumbers.push(squareNumber);
-    historySquares.push(squares)
+    historySquares.push(squares);
     this.setState({
       squares: squares,
       squareNumbers: squareNumbers,
       historySquares: historySquares
     });
-  }
-
-  isPlaceable(squareNumber, squares) {
-
   }
 
   jumpTo(step) {
@@ -143,6 +168,10 @@ function isBlackMove(step) {
     return null;
   }
   return (step % 2) ? true : false;
+}
+
+function color(step) {
+  return isBlackMove(step) ? black : white;
 }
 
 function countBlack(squares) {
@@ -170,73 +199,114 @@ function rowsNumber(squareNumber) {
 }
 
 function columnNumber(squareNumber) {
-  return squareNumber % lineCount;
+  return (squareNumber - 1) % lineCount + 1;
 }
 
 function squarePosition(squareNumber) {
   return rowStrings[rowsNumber(squareNumber) - 1] + ', ' + columnStrings[columnNumber(squareNumber) - 1];
 }
 
-function turnSquare(squares, squareNumber, step) {
-  const myColor = isBlackMove(step) ? black : white;
-  const otherColor = isBlackMove(step + 1) ? black : white;
+function turnSquareNumbers(squares, squareNumber, step) {
+  const myColor = color(step);
+  const upFactors = [0 - lineCount - 1, 0 - lineCount, 0 - lineCount + 1];
+  const sideFactors = [0 - 1, 0 + 1];
+  const downFactors = [lineCount - 1, lineCount, lineCount + 1];
 
-  var _squareNumber = squareNumber;
-  var _squareNumbers = [];
+  let _turnSquareNumbers = [];
+  let _squareNumber;
+  let _squareNumbers = [];
+  let _previousRowNumber;
+  let _currentRowNumber;
 
-  const upRowFactors = [0 - lineCount - 1, 0 - lineCount, 0 - lineCount + 1];
-  const sameRowFactors = [-1, 1];
-  const downRowFactors = [lineCount - 1, lineCount, lineCount + 1];
-
-  // up row
-  while (true) {
-    for (let i = 0; i < upRowFactors.length; i++) {
-      var previousRowNumber = rowsNumber(_squareNumber);
-      _squareNumber = _squareNumber + upRowFactors[i];
-      var currentRowNumber = rowsNumber(_squareNumber);
+  // up
+  for (let i = 0; i < upFactors.length; i++) {
+    _squareNumber = squareNumber;
+    _squareNumbers = [];
+    while (true) {
+      _previousRowNumber = rowsNumber(_squareNumber);
+      _squareNumber += upFactors[i];
+      _currentRowNumber = rowsNumber(_squareNumber);
+      if (squares[_squareNumber] === null || _squareNumber < 1 || _previousRowNumber === _currentRowNumber || _previousRowNumber - _currentRowNumber > 1) {
+        break;
+      }
       if (squares[_squareNumber] === myColor) {
-        for (let j = 0; j < _squareNumbers.length; j++) {
-          squares[_squareNumbers[j]] = myColor;
-        }
+        _turnSquareNumbers = _turnSquareNumbers.concat(_squareNumbers);
         break;
       }
       _squareNumbers.push(_squareNumber);
-      if (squares[_squareNumber] === null || _squareNumber <= 0 || previousRowNumber === currentRowNumber || previousRowNumber - currentRowNumber > 1) {
+    }
+  }
+
+  // side
+  for (let i = 0; i < sideFactors.length; i++) {
+    _squareNumber = squareNumber;
+    _squareNumbers = [];
+    while (true) {
+      _previousRowNumber = rowsNumber(_squareNumber);
+      _squareNumber += sideFactors[i];
+      _currentRowNumber = rowsNumber(_squareNumber);
+      if (squares[_squareNumber] === null || _squareNumber < 1 || _squareNumber > Math.pow(lineCount, 2) || _previousRowNumber !== _currentRowNumber) {
+        break;
+      }
+      if (squares[_squareNumber] === myColor) {
+        _turnSquareNumbers = _turnSquareNumbers.concat(_squareNumbers);
+        break;
+      }
+      _squareNumbers.push(_squareNumber);
+    }
+  }
+
+  // down
+  for (let i = 0; i < downFactors.length; i++) {
+    _squareNumber = squareNumber;
+    _squareNumbers = [];
+    while (true) {
+      _previousRowNumber = rowsNumber(_squareNumber);
+      _squareNumber += downFactors[i];
+      _currentRowNumber = rowsNumber(_squareNumber);
+      if (squares[_squareNumber] === null || _squareNumber > Math.pow(lineCount, 2) || _previousRowNumber === _currentRowNumber || _currentRowNumber - _previousRowNumber > 1) {
+        break;
+      }
+      if (squares[_squareNumber] === myColor) {
+        _turnSquareNumbers = _turnSquareNumbers.concat(_squareNumbers);
+        break;
+      }
+      _squareNumbers.push(_squareNumber);
+    }
+  }
+
+  return _turnSquareNumbers;
+}
+
+function turnSquare(squares, squareNumber, step) {
+  const myColor = color(step);
+  const _turnSquareNumbers = turnSquareNumbers(squares, squareNumber, step);
+  for (let i = 0; i < _turnSquareNumbers.length; i++) {
+    squares[_turnSquareNumbers[i]] = myColor;
+  }
+  return squares;
+}
+
+function isGameEnd(squares, squareNumbers) {
+  let _isGameEnd = true;
+  if (squareNumbers[squareNumbers.length - 1] !== 0 || squareNumbers[squareNumbers.length - 2] !== 0) {
+    for (let key in squares) {
+      if (squares[key] === null) {
+        _isGameEnd = false;
         break;
       }
     }
   }
-
-  // same row
-//
-//  - lineCount
-//  - lineCount + 1
-//  - 1
-//  + 1
-//  + lineCount - 1
-//  + lineCount
-//  + lineCount + 1
-
-  // down row
-
-
-  return squares;
+  return _isGameEnd;
 }
 
 function calculateWinner(squares) {
   const blackCount = countBlack(squares);
   const whiteCount = countWhite(squares);
-
-  for (let key in squares) {
-    if (squares[key] === null) {
-      return null;
-    }
-  }
-
   if (blackCount > whiteCount) {
-    return 'Winner: ' + black + '!!';
+    return 'Winner: ' + black + ' !!';
   } else if (blackCount < whiteCount) {
-    return 'Winner: ' + white + '!!';
+    return 'Winner: ' + white + ' !!';
   } else {
     return 'Draw....';
   }
