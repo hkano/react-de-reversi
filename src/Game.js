@@ -23,18 +23,35 @@ class Board extends Component {
     return <Square key={"square-" + squareNumber} value={this.props.squares[squareNumber]} onClick={() => this.props.onClick(squareNumber)} />;
   }
   render() {
-    let board = [];
+    let boardBody = [];
+    let boardRowNumbers = [];
+    let boardColumnNumbers = [];
+
+    for (let row = 0; row < lineCount; row++) {
+      boardRowNumbers.push(<div key={"board-row-number-" + (row + 1)} className="row-number">{rowStrings[row]}</div>);
+    }
+    for (let column = 0; column < lineCount; column++) {
+      boardColumnNumbers.push(<div key={"board-column-number-" + (column + 1)} className="column-number">{columnStrings[column]}</div>);
+    }
     for (let row = 0; row < lineCount; row++) {
       let squares = [];
       for (let column = 0; column < lineCount; column++) {
         const squareNumber = row * lineCount + column + 1;
         squares.push(this.renderSquare(squareNumber));
       }
-      board.push(<div key={"board-row-" + (row + 1)} className="board-row">{squares}</div>);
+      boardBody.push(<div key={"board-body-row-" + (row + 1)} className="body-row">{squares}</div>);
     }
     return (
       <div className="board">
-        {board}
+        <div className="column-numbers">
+          {boardColumnNumbers}
+        </div>
+        <div className="row-numbers">
+          {boardRowNumbers}
+        </div>
+        <div className="body">
+          {boardBody}
+        </div>
       </div>
     );
   }
@@ -51,39 +68,22 @@ class Game extends Component {
     squares[29] = white;
     squares[36] = white;
     squares[37] = black;
+
     this.state = {
       squares: squares,
       squareNumbers: [0],
-      historySquares: [squares]
+      historySquares: [Object.assign({}, squares)]
     };
   }
   render() {
     let squares = this.state.squares;
     let squareNumbers = this.state.squareNumbers;
-    let historySquares = this.state.historySquares;
-    const step = squareNumbers.length - 1;
+    let step = squareNumbers.length - 1;
 
     let winner = null;
 
     if (isGameEnd(squares, squareNumbers)) {
       winner = calculateWinner(squares);
-    } else {
-      const _canPlace = Array(Math.pow(lineCount, 2)).fill(null).some((_, index) => {
-        if (squares[index + 1]) {
-          return false;
-        }
-        return this.canPlace(squares, index + 1, step + 1);
-      });
-      if (!_canPlace) {
-        squareNumbers.push(0);
-        historySquares.push(squares);
-        // TODO: warning.js:36 Warning: setState(...): Cannot update during an existing state transition (such as within `render` or another component's constructor). Render methods should be a pure function of props and state; constructor side-effects are an anti-pattern, but can be moved to `componentWillMount`.
-        this.setState({
-          squares: squares,
-          squareNumbers: squareNumbers,
-          historySquares: historySquares
-        });
-      }
     }
 
     const moves = squareNumbers.map((squareNumber, index) => {
@@ -119,14 +119,10 @@ class Game extends Component {
           <div className="count">
             ● {countBlack(squares)} - {countWhite(squares)} ○
           </div>
-          <ol>{moves}</ol>
+          <ol reversed="reversed">{moves}</ol>
         </div>
       </div>
     );
-  }
-
-  canPlace(squares, squareNumber, step) {
-    return turnSquareNumbers(squares, squareNumber, step).length > 0;
   }
 
   handleClick(squareNumber) {
@@ -134,13 +130,24 @@ class Game extends Component {
     let squareNumbers = this.state.squareNumbers;
     let historySquares = this.state.historySquares;
     const step = squareNumbers.length; // at clicked
-    if (squares[squareNumber] || !this.canPlace(squares, squareNumber, step)) {
+    if (squares[squareNumber] || !canPlace(squares, squareNumber, step)) {
       return;
     }
     squares[squareNumber] = color(step);
     squares = turnSquare(squares, squareNumber, step);
     squareNumbers.push(squareNumber);
-    historySquares.push(squares);
+    historySquares.push(Object.assign({}, squares));
+
+    // skip
+    for (let i = 1; i <= 2; i++) {
+      if (canPlaceAny(squares, step + i) || isGameEnd(squares, squareNumbers)) {
+        break;
+      } else {
+        squareNumbers.push(0);
+        historySquares.push(Object.assign({}, squares));
+      }
+    }
+
     this.setState({
       squares: squares,
       squareNumbers: squareNumbers,
@@ -149,18 +156,31 @@ class Game extends Component {
   }
 
   jumpTo(step) {
-    let squares = this.state.squares;
+    let squares;
     let squareNumbers = this.state.squareNumbers;
     let historySquares = this.state.historySquares;
-    for (let i = squareNumbers.length - 1; i > step; i--) {
-      squares[squareNumbers[i]] = null;
+
+    squares = Object.assign({}, historySquares[step]);
+    squareNumbers = squareNumbers.slice(0, step + 1);
+    historySquares = historySquares.slice(0, step + 1);
+
+    // skip
+    for (let i = 1; i <= 2; i++) {
+      if (canPlaceAny(squares, step + i) || isGameEnd(squares, squareNumbers)) {
+        break;
+      } else {
+        squareNumbers.push(0);
+        historySquares.push(Object.assign({}, squares));
+      }
     }
+
     this.setState({
-      squares: historySquares[step],
-      squareNumbers: squareNumbers.slice(0, step + 1),
-      historySquares: historySquares.slice(0, step + 1)
+      squares: squares,
+      squareNumbers: squareNumbers,
+      historySquares: historySquares
     });
   }
+
 }
 
 function isBlackMove(step) {
@@ -204,6 +224,19 @@ function columnNumber(squareNumber) {
 
 function squarePosition(squareNumber) {
   return rowStrings[rowsNumber(squareNumber) - 1] + ', ' + columnStrings[columnNumber(squareNumber) - 1];
+}
+
+function canPlace(squares, squareNumber, step) {
+  return turnSquareNumbers(squares, squareNumber, step).length > 0;
+}
+
+function canPlaceAny(squares, step) {
+  return Array(Math.pow(lineCount, 2)).fill(null).some((_, index) => {
+    if (squares[index + 1]) {
+      return false;
+    }
+    return canPlace(squares, index + 1, step);
+  });
 }
 
 function turnSquareNumbers(squares, squareNumber, step) {
@@ -287,17 +320,17 @@ function turnSquare(squares, squareNumber, step) {
   return squares;
 }
 
+function isFilled(squares) {
+  return Array(Math.pow(lineCount, 2)).fill(null).every((_, index) => {
+    return squares[index + 1] !== null;
+  });
+}
+
 function isGameEnd(squares, squareNumbers) {
-  let _isGameEnd = true;
-  if (squareNumbers[squareNumbers.length - 1] !== 0 || squareNumbers[squareNumbers.length - 2] !== 0) {
-    for (let key in squares) {
-      if (squares[key] === null) {
-        _isGameEnd = false;
-        break;
-      }
-    }
+  if (squareNumbers[squareNumbers.length - 1] === 0 && squareNumbers[squareNumbers.length - 2] === 0) {
+    return true;
   }
-  return _isGameEnd;
+  return isFilled(squares);
 }
 
 function calculateWinner(squares) {

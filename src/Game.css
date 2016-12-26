@@ -6,16 +6,22 @@
 }
 
 .Game-board .board {
+  margin-left: 20px;
+  margin-top: 20px;
+  position: relative;
+}
+
+.Game-board .board .body {
   border: 10px outset #666;
 }
 
-.Game-board .board-row:after {
+.Game-board .board .body-row:after {
   clear: both;
   content: "";
   display: table;
 }
 
-.Game-board .board-row .square {
+.Game-board .board .body-row .square {
   background: #393;
   border: 1px solid #666;
   float: left;
@@ -29,20 +35,47 @@
   width: 34px;
 }
 
-.Game-board .board-row .square:focus {
+.Game-board .board .body-row .square:focus {
   outline: none;
 }
 
-.Game-board .board-row .square .black {
+.Game-board .board .body-row .square .black {
   color: #000;
 }
 
-.Game-board .board-row .square .white {
+.Game-board .board .body-row .square .white {
   color: #fff;
 }
 
-.Game-board .board-row .square .none {
+.Game-board .board .body-row .square .none {
   display: none;
+}
+
+.Game-board .board .row-numbers {
+  left: -30px;
+  position: absolute;
+  top: 18px;
+}
+
+.Game-board .board .row-numbers .row-number {
+  display: block;
+  height: 34px;
+  margin-top: -1px;
+  text-align: center;
+  width: 34px;
+}
+
+.Game-board .board .column-numbers {
+  left: 11px;
+  position: absolute;
+  top: -24px;
+}
+
+.Game-board .board .column-numbers .column-number {
+  float: left;
+  margin-right: -1px;
+  text-align: center;
+  width: 34px;
 }
 
 .Game-info {
@@ -61,6 +94,9 @@
   padding: 10px 30px 0;
 }
 
-.Game-info ol, ul {
+.Game-info ol {
   padding-left: 30px;
+}
+
+.Game-info ol li {
 }
