@@ -10,10 +10,40 @@ const white =  'white';
 const rowStrings = Array(30).fill(null).map((_, index) => { return index + 1; });
 const columnStrings = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
 
+function GuideButton(props) {
+  const name = props.value ? 'off' : 'on';
+  return (
+    <button className="guide-button" onClick={() => props.onClick()}>
+      Guide: {name}
+    </button>
+  );
+}
+
+function BlackComputerButton(props) {
+  const name = props.value ? 'user' : 'com';
+  return (
+    <button className="black-computer-button" onClick={() => props.onClick()}>
+      Black: {name}
+    </button>
+  );
+}
+
+function WhiteComputerButton(props) {
+  const name = props.value ? 'user' : 'com';
+  return (
+    <button className="white-computer-button" onClick={() => props.onClick()}>
+      White: {name}
+    </button>
+  );
+}
+
 function Square(props) {
   const name = props.value ? props.value : 'none';
-  const className = props.canPlace ? 'square square-o' : 'square square-x';
-
+  const displayGuide = props.displayGuide;
+  let className = 'square';
+  if (displayGuide) {
+    className += ' ' + (props.canPlace ? 'square-o' : 'square-x');
+  }
   return (
     <button className={className} onClick={() => props.onClick()}>
       <span className={name}>●</span>
@@ -21,14 +51,45 @@ function Square(props) {
   );
 }
 
+class Menu extends Component {
+  render() {
+    const displayGuide = this.props.displayGuide;
+    const isBlackComputer = this.props.isBlackComputer;
+    const isWhiteComputer = this.props.isWhiteComputer;
+    return (
+      <div className="menu">
+        <GuideButton
+          value={displayGuide}
+          onClick={() => this.props.onClickGuideButton()}
+        />
+        <BlackComputerButton
+          value={isBlackComputer}
+          onClick={() => this.props.onClickBlackComputerButton()}
+        />
+        <WhiteComputerButton
+          value={isWhiteComputer}
+          onClick={() => this.props.onClickWhiteComputerButton()}
+        />
+      </div>
+    );
+  }
+}
+
 class Board extends Component {
-  renderSquare(squareNumber, canPlace) {
-    return <Square key={"square-" + squareNumber} value={this.props.squares[squareNumber]} canPlace={canPlace} onClick={() => this.props.onClick(squareNumber)} />;
+  renderSquare(squareNumber, canPlace, displayGuide) {
+    return <Square
+      key={"square-" + squareNumber}
+      value={this.props.squares[squareNumber]}
+      canPlace={canPlace}
+      displayGuide={displayGuide}
+      onClick={() => this.props.onClick(squareNumber)}
+    />;
   }
 
   render() {
     const squares = this.props.squares;
     const step = this.props.step;
+    const displayGuide = this.props.displayGuide;
 
     let boardBody = [];
     let boardRowNumbers = [];
@@ -44,7 +105,7 @@ class Board extends Component {
       let rowSquares = [];
       for (let column = 0; column < lineCount; column++) {
         const squareNumber = row * lineCount + column + 1;
-        rowSquares.push(this.renderSquare(squareNumber, canPlace(squares, squareNumber, step + 1)));
+        rowSquares.push(this.renderSquare(squareNumber, canPlace(squares, squareNumber, step + 1), displayGuide));
       }
       boardBody.push(<div key={"board-body-row-" + (row + 1)} className="body-row">{rowSquares}</div>);
     }
@@ -79,7 +140,10 @@ class Game extends Component {
     this.state = {
       squares: squares,
       squareNumbers: [0],
-      historySquares: [Object.assign({}, squares)]
+      historySquares: [Object.assign({}, squares)],
+      displayGuide: false,
+      isBlackComputer: false,
+      isWhiteComputer: false
     };
   }
 
@@ -87,8 +151,11 @@ class Game extends Component {
     let squares = this.state.squares;
     let squareNumbers = this.state.squareNumbers;
     let step = squareNumbers.length - 1;
-
     let winner = null;
+
+    const displayGuide = this.state.displayGuide;
+    const isBlackComputer = this.state.isBlackComputer;
+    const isWhiteComputer = this.state.isWhiteComputer;
 
     if (isGameEnd(squares, squareNumbers)) {
       winner = calculateWinner(squares);
@@ -120,8 +187,19 @@ class Game extends Component {
           <Board
             squares={squares}
             step={step}
+            displayGuide={displayGuide}
             onClick={(squareNumber) => this.handleClick(squareNumber)}
           />
+          <div className="Game-menu">
+            <Menu
+              displayGuide={displayGuide}
+              onClickGuideButton={() => this.displayGuide()}
+              isBlackComputer={isBlackComputer}
+              onClickBlackComputerButton={() => this.blackComputer()}
+              isWhiteComputer={isWhiteComputer}
+              onClickWhiteComputerButton={() => this.whiteComputer()}
+            />
+          </div>
         </div>
         <div className="Game-info">
           <span>{status}</span>
@@ -146,15 +224,32 @@ class Game extends Component {
     if (squares[squareNumber] || !canPlace(squares, squareNumber, step)) {
       return;
     }
+
+    const isBlackComputer = this.state.isBlackComputer;
+    const isWhiteComputer = this.state.isWhiteComputer;
+
     squares[squareNumber] = color(step);
     squares = turnSquare(squares, squareNumber, step);
     squareNumbers.push(squareNumber);
     historySquares.push(Object.assign({}, squares));
 
-    // skip
+    // skip and computer
     for (let i = 1; i <= 2; i++) {
       if (canPlaceAny(squares, step + i) || isGameEnd(squares, squareNumbers)) {
-        break;
+        if (color(step + i) === 'black' && isBlackComputer) {
+          squareNumber = shuffle(squareNumbersOfPlaceable(squares, step + i))[0];
+          squares[squareNumber] = color(step + i);
+          squares = turnSquare(squares, squareNumber, step + i);
+          squareNumbers.push(squareNumber);
+          historySquares.push(Object.assign({}, squares));
+        }
+        if (color(step + i) === 'white' && isWhiteComputer) {
+          squareNumber = shuffle(squareNumbersOfPlaceable(squares, step + i))[0];
+          squares[squareNumber] = color(step + i);
+          squares = turnSquare(squares, squareNumber, step + i);
+          squareNumbers.push(squareNumber);
+          historySquares.push(Object.assign({}, squares));
+        }
       } else {
         squareNumbers.push(0);
         historySquares.push(Object.assign({}, squares));
@@ -165,6 +260,27 @@ class Game extends Component {
       squares: squares,
       squareNumbers: squareNumbers,
       historySquares: historySquares
+    });
+  }
+
+  displayGuide() {
+    const displayGuide = this.state.displayGuide;
+    this.setState({
+      displayGuide: !displayGuide
+    });
+  }
+
+  blackComputer() {
+    const isBlackComputer = this.state.isBlackComputer;
+    this.setState({
+      isBlackComputer: !isBlackComputer
+    });
+  }
+
+  whiteComputer() {
+    const isWhiteComputer = this.state.isWhiteComputer;
+    this.setState({
+      isWhiteComputer: !isWhiteComputer
     });
   }
 
@@ -194,6 +310,19 @@ class Game extends Component {
     });
   }
 
+}
+
+function shuffle(array) {
+  let num = array.length;
+  let temp;
+  let i;
+  while (num) {
+    i = Math.floor(Math.random() * num--);
+    temp = array[num];
+    array[num] = array[i];
+    array[i] = temp;
+  }
+  return array;
 }
 
 function isBlackMove(step) {
@@ -253,6 +382,18 @@ function canPlaceAny(squares, step) {
     }
     return canPlace(squares, index + 1, step);
   });
+}
+
+function squareNumbersOfPlaceable(squares, step) {
+  let squareNumbers = [];
+  for (let i = 1; i <= Math.pow(lineCount, 2); i++) {
+    if (!squares[i + 1]) {
+      if (canPlace(squares, i, step)) {
+        squareNumbers.push(i);
+      }
+    }
+  }
+  return squareNumbers;
 }
 
 function turnSquareNumbers(squares, squareNumber, step) {

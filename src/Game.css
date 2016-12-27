@@ -22,7 +22,7 @@
 }
 
 .Game-board .board .body-row .square {
-  background: #3c3;
+  background: #393;
   border: 1px solid #666;
   float: left;
   font-size: 48px;
@@ -86,6 +86,18 @@
   width: 34px;
 }
 
+.Game-menu {
+  margin-left: 27px;
+  margin-top: 20px;
+  width: 100%;
+}
+
+.Game-menu button {
+  height: 30px;
+  margin: 0 5px;
+  width: 80px;
+}
+
 .Game-info {
   margin-left: 30px;
   width: 160px;
@@ -106,7 +118,7 @@
 
 .Game-info ol {
   border: 1px solid #666;
-  height: 200px;
+  height: 250px;
   overflow-x: hidden;
   overflow-y: scroll;
   padding-bottom: 10px;
@@ -115,6 +127,16 @@
 }
 
 .Game-info ol li {
-  margin-bottom: 2px;
+  height: 22px;
   margin-left: 5px;
+}
+
+.Game-info ol li a {
+  color: #000;
+  text-decoration: none;
+}
+
+.Game-info ol li a:hover {
+  color: #999;
+  text-decoration: underline;
 }
