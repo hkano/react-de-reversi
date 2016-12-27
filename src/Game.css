@@ -22,7 +22,7 @@
 }
 
 .Game-board .board .body-row .square {
-  background: #393;
+  background: #3c3;
   border: 1px solid #666;
   float: left;
   font-size: 48px;
@@ -33,6 +33,14 @@
   padding: 0;
   text-align: center;
   width: 34px;
+}
+
+.Game-board .board .body-row .square-o {
+  background: #3c3;
+}
+
+.Game-board .board .body-row .square-x {
+  background: #393;
 }
 
 .Game-board .board .body-row .square:focus {
@@ -80,23 +88,33 @@
 
 .Game-info {
   margin-left: 30px;
-  width: 200px;
+  width: 160px;
 }
 
 .Game-info span {
   font-size: 16px;
   font-weight: bold;
+  text-align: center;
 }
 
 .Game-info .count {
   font-size: 16px;
   font-weight: bold;
-  padding: 10px 30px 0;
+  padding-top: 10px;
+  text-align: center;
 }
 
 .Game-info ol {
+  border: 1px solid #666;
+  height: 200px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  padding-bottom: 10px;
   padding-left: 30px;
+  padding-top: 10px;
 }
 
 .Game-info ol li {
+  margin-bottom: 2px;
+  margin-left: 5px;
 }

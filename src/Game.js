@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import $ from 'jquery';
 import './Game.css';
 
 const lineCount = 8;
@@ -11,18 +12,24 @@ const columnStrings = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l
 
 function Square(props) {
   const name = props.value ? props.value : 'none';
+  const className = props.canPlace ? 'square square-o' : 'square square-x';
+
   return (
-    <button className="square" onClick={() => props.onClick()}>
+    <button className={className} onClick={() => props.onClick()}>
       <span className={name}>●</span>
     </button>
   );
 }
 
 class Board extends Component {
-  renderSquare(squareNumber) {
-    return <Square key={"square-" + squareNumber} value={this.props.squares[squareNumber]} onClick={() => this.props.onClick(squareNumber)} />;
+  renderSquare(squareNumber, canPlace) {
+    return <Square key={"square-" + squareNumber} value={this.props.squares[squareNumber]} canPlace={canPlace} onClick={() => this.props.onClick(squareNumber)} />;
   }
+
   render() {
+    const squares = this.props.squares;
+    const step = this.props.step;
+
     let boardBody = [];
     let boardRowNumbers = [];
     let boardColumnNumbers = [];
@@ -34,12 +41,12 @@ class Board extends Component {
       boardColumnNumbers.push(<div key={"board-column-number-" + (column + 1)} className="column-number">{columnStrings[column]}</div>);
     }
     for (let row = 0; row < lineCount; row++) {
-      let squares = [];
+      let rowSquares = [];
       for (let column = 0; column < lineCount; column++) {
         const squareNumber = row * lineCount + column + 1;
-        squares.push(this.renderSquare(squareNumber));
+        rowSquares.push(this.renderSquare(squareNumber, canPlace(squares, squareNumber, step + 1)));
       }
-      boardBody.push(<div key={"board-body-row-" + (row + 1)} className="body-row">{squares}</div>);
+      boardBody.push(<div key={"board-body-row-" + (row + 1)} className="body-row">{rowSquares}</div>);
     }
     return (
       <div className="board">
@@ -75,6 +82,7 @@ class Game extends Component {
       historySquares: [Object.assign({}, squares)]
     };
   }
+
   render() {
     let squares = this.state.squares;
     let squareNumbers = this.state.squareNumbers;
@@ -111,6 +119,7 @@ class Game extends Component {
         <div className="Game-board">
           <Board
             squares={squares}
+            step={step}
             onClick={(squareNumber) => this.handleClick(squareNumber)}
           />
         </div>
@@ -119,10 +128,14 @@ class Game extends Component {
           <div className="count">
             ● {countBlack(squares)} - {countWhite(squares)} ○
           </div>
-          <ol reversed="reversed">{moves}</ol>
+          <ol>{moves}</ol>
         </div>
       </div>
     );
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    $('.Game-info ol').scrollTop(9999);
   }
 
   handleClick(squareNumber) {
@@ -227,6 +240,9 @@ function squarePosition(squareNumber) {
 }
 
 function canPlace(squares, squareNumber, step) {
+  if (squares[squareNumber] !== null) {
+    return false;
+  }
   return turnSquareNumbers(squares, squareNumber, step).length > 0;
 }
 
@@ -337,9 +353,9 @@ function calculateWinner(squares) {
   const blackCount = countBlack(squares);
   const whiteCount = countWhite(squares);
   if (blackCount > whiteCount) {
-    return 'Winner: ' + black + ' !!';
+    return 'Winner: ' + black.toUpperCase() + ' !!';
   } else if (blackCount < whiteCount) {
-    return 'Winner: ' + white + ' !!';
+    return 'Winner: ' + white.toUpperCase() + ' !!';
   } else {
     return 'Draw....';
   }
