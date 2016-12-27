@@ -87,8 +87,9 @@
 }
 
 .Game-menu {
-  margin-left: 27px;
+  margin-left: 10px;
   margin-top: 20px;
+  text-align: center;
   width: 100%;
 }
 
