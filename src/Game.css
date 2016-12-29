@@ -25,13 +25,12 @@
   background: #393;
   border: 1px solid #666;
   float: left;
-  font-size: 48px;
+  font-size: 26px;
   height: 34px;
-  line-height: 0;
+  line-height: 34px;
   margin-right: -1px;
   margin-top: -1px;
-  padding: 0;
-  text-align: center;
+  padding: 1px 0 0 2px;
   width: 34px;
 }
 
@@ -94,8 +93,11 @@
 }
 
 .Game-menu button {
+  background-color: #ccc;
+  border: 1px solid #999;
   height: 30px;
   margin: 0 5px;
+  padding: 2px;
   width: 80px;
 }
 
@@ -110,11 +112,31 @@
   text-align: center;
 }
 
+.Game-info span span.black {
+  color: #000;
+  font-size: 14px;
+}
+
+.Game-info span span.white {
+  color: #fff;
+  font-size: 14px;
+}
+
 .Game-info .count {
   font-size: 16px;
   font-weight: bold;
   padding-top: 10px;
   text-align: center;
+}
+
+.Game-info .count span..black {
+  color: #000;
+  font-size: 14px;
+}
+
+.Game-info .count span..white {
+  color: #fff;
+  font-size: 14px;
 }
 
 .Game-info ol {
@@ -140,4 +162,18 @@
 .Game-info ol li a:hover {
   color: #999;
   text-decoration: underline;
+}
+
+.Game-info ol li a div {
+  display: inline;
+}
+
+.Game-info ol li a div span.black {
+  color: #000;
+  font-size: 12px;
+}
+
+.Game-info ol li a div span.white {
+  color: #fff;
+  font-size: 12px;
 }

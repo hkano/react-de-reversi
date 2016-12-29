@@ -6,6 +6,8 @@ const lineCount = 8;
 
 const black = 'black';
 const white =  'white';
+const blackPiece = '\u26AB';
+const whitePiece = '\u26AA';
 
 const rowStrings = Array(30).fill(null).map((_, index) => { return index + 1; });
 const columnStrings = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
@@ -36,13 +38,20 @@ class Menu extends Component {
 function Square(props) {
   const name = props.value ? props.value : 'none';
   const displayGuide = props.displayGuide;
+  let piece = '';
+  if (name === black) {
+    piece = blackPiece;
+  }
+  if (name === white) {
+    piece = whitePiece;
+  }
   let className = 'square';
   if (displayGuide) {
     className += ' ' + (props.canPlace ? 'square-o' : 'square-x');
   }
   return (
     <button className={className} onClick={() => props.onClick()}>
-      <span className={name}>●</span>
+      <span className={name}>{piece}</span>
     </button>
   );
 }
@@ -130,23 +139,39 @@ class Game extends Component {
     }
 
     const moves = squareNumbers.map((squareNumber, index) => {
-      let description = 'Game start';
-      if (index > 0) {
-        description = ((squareNumber > 0) ? 'Move' : 'Skip') + ': ' + (isBlackMove(index) ? '●' : '○');
-      }
+      const description = (squareNumber, index) => {
+        if (index > 0) {
+          return (
+            <div>
+              {(squareNumber > 0) ? 'Move: ' : 'Skip: '}
+              <span className={(isBlackMove(index) ? black : white)}>{(isBlackMove(index) ? blackPiece : whitePiece) + ' '}</span>
+            </div>
+          )
+        }
+        return 'Game start';
+      };
+
       return (
         <li key={index} value={index}>
           <a href="#" onClick={() => this.jumpTo(index)}>
-            {description}
+            {description(squareNumber, index)}
           </a>
           {squareNumber > 0 ? ' (' + squarePosition(squareNumber) + ') ' : ''}
         </li>
       );
     });
 
-    let status = 'Next player: ' + (isBlackMove(step + 1) ? '● [1st]' : '○ [2nd]');
-    if (winner) {
-      status = winner;
+    let status = (step, winner) => {
+      if (winner) {
+        return winner;
+      }
+      return (
+        <div>
+          {'Next player: '}
+          <span className={(isBlackMove(step + 1) ? black : white)}>{(isBlackMove(step + 1) ? blackPiece : whitePiece) + ' '}</span>
+          [{isBlackMove(step + 1) ? '1st' : '2nd'}]
+        </div>
+      )
     }
 
     return (
@@ -166,9 +191,9 @@ class Game extends Component {
           </div>
         </div>
         <div className="Game-info">
-          <span>{status}</span>
+          <span>{status(step, winner)}</span>
           <div className="count">
-            ● {countBlack(squares)} - {countWhite(squares)} ○
+            <span className="black">{blackPiece}</span> {countBlack(squares)} - {countWhite(squares)} <span className="white">{whitePiece}</span>
           </div>
           <ol>{moves}</ol>
         </div>
