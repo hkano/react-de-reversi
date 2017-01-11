@@ -115,13 +115,12 @@
 
 .Game-info {
   margin-left: 30px;
-  width: 160px;
+  width: 180px;
 }
 
 .Game-info span {
   font-size: 16px;
   font-weight: bold;
-  text-align: center;
 }
 
 .Game-info span span.black {
@@ -183,7 +182,7 @@
 
 .Game-info ol li {
   height: 22px;
-  margin-left: 5px;
+  margin-left: 8px;
 }
 
 .Game-info ol li a {
