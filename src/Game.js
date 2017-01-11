@@ -6,8 +6,6 @@ const lineCount = 8;
 
 const black = 'black';
 const white =  'white';
-const blackPiece = '\u26AB';
-const whitePiece = '\u26AA';
 
 const rowStrings = Array(30).fill(null).map((_, index) => { return index + 1; });
 const columnStrings = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
@@ -38,20 +36,13 @@ class Menu extends Component {
 function Square(props) {
   const name = props.value ? props.value : 'none';
   const displayGuide = props.displayGuide;
-  let piece = '';
-  if (name === black) {
-    piece = blackPiece;
-  }
-  if (name === white) {
-    piece = whitePiece;
-  }
   let className = 'square';
   if (displayGuide) {
     className += ' ' + (props.canPlace ? 'square-o' : 'square-x');
   }
   return (
     <button className={className} onClick={() => props.onClick()}>
-      <span className={name}>{piece}</span>
+      <span className={name}></span>
     </button>
   );
 }
@@ -144,7 +135,7 @@ class Game extends Component {
           return (
             <div>
               {(squareNumber > 0) ? 'Move: ' : 'Skip: '}
-              <span className={(isBlackMove(index) ? black : white)}>{(isBlackMove(index) ? blackPiece : whitePiece) + ' '}</span>
+              <span className={(isBlackMove(index) ? black : white)}></span>
             </div>
           )
         }
@@ -168,7 +159,7 @@ class Game extends Component {
       return (
         <div>
           {'Next player: '}
-          <span className={(isBlackMove(step + 1) ? black : white)}>{(isBlackMove(step + 1) ? blackPiece : whitePiece) + ' '}</span>
+          <span className={(isBlackMove(step + 1) ? black : white)}></span>
           [{isBlackMove(step + 1) ? '1st' : '2nd'}]
         </div>
       )
@@ -193,7 +184,7 @@ class Game extends Component {
         <div className="Game-info">
           <span>{status(step, winner)}</span>
           <div className="count">
-            <span className="black">{blackPiece}</span> {countBlack(squares)} - {countWhite(squares)} <span className="white">{whitePiece}</span>
+            <span className="black"></span> {countBlack(squares)} - {countWhite(squares)} <span className="white"></span>
           </div>
           <ol>{moves}</ol>
         </div>

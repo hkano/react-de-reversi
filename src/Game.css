@@ -47,11 +47,23 @@
 }
 
 .Game-board .board .body-row .square .black {
-  color: #000;
+  background-color: #000;
+  border-radius: 46px;
+  display: inline-block;
+  height: 23px;
+  margin-right: 1px;
+  margin-top: 1px;
+  width: 23px;
 }
 
 .Game-board .board .body-row .square .white {
-  color: #fff;
+  background-color: #fff;
+  border-radius: 46px;
+  display: inline-block;
+  height: 23px;
+  margin-right: 1px;
+  margin-top: 1px;
+  width: 23px;
 }
 
 .Game-board .board .body-row .square .none {
@@ -113,13 +125,23 @@
 }
 
 .Game-info span span.black {
-  color: #000;
-  font-size: 14px;
+  background-color: #000;
+  border: solid 1px #000;
+  border-radius: 28px;
+  display: inline-flex;
+  height: 14px;
+  margin-right: 4px;
+  width: 14px;
 }
 
 .Game-info span span.white {
-  color: #fff;
-  font-size: 14px;
+  background-color: #fff;
+  border: solid 1px #666;
+  border-radius: 28px;
+  display: inline-flex;
+  height: 14px;
+  margin-right: 4px;
+  width: 14px;
 }
 
 .Game-info .count {
@@ -129,14 +151,24 @@
   text-align: center;
 }
 
-.Game-info .count span..black {
-  color: #000;
-  font-size: 14px;
+.Game-info .count span.black {
+  background-color: #000;
+  border: solid 1px #000;
+  border-radius: 28px;
+  display: inline-flex;
+  height: 14px;
+  margin-right: 2px;
+  width: 14px;
 }
 
-.Game-info .count span..white {
-  color: #fff;
-  font-size: 14px;
+.Game-info .count span.white {
+  background-color: #fff;
+  border: solid 1px #666;
+  border-radius: 28px;
+  display: inline-flex;
+  height: 14px;
+  margin-left: 2px;
+  width: 14px;
 }
 
 .Game-info ol {
@@ -169,11 +201,19 @@
 }
 
 .Game-info ol li a div span.black {
-  color: #000;
-  font-size: 12px;
+  background-color: #000;
+  border: solid 1px #000;
+  border-radius: 28px;
+  display: inline-flex;
+  height: 12px;
+  width: 12px;
 }
 
 .Game-info ol li a div span.white {
-  color: #fff;
-  font-size: 12px;
+  background-color: #fff;
+  border: solid 1px #666;
+  border-radius: 24px;
+  display: inline-flex;
+  height: 12px;
+  width: 12px;
 }
