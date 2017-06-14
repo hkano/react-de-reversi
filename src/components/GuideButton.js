@@ -1,16 +1,12 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
 
 const GuideButton = ({ value, onClick }) => {
+  const className = 'guide-button ' + (value ? 'guide-button-on' : 'guide-button-off')
   return (
-    <button className="guide-button" onClick={ onClick }>
+    <button className={ className } onClick={ onClick }>
       Guide: {value ? "On" : "Off" }
     </button>
   )
-}
-
-GuideButton.PropTypes = {
-//  value: PropTypes.string.isRequired,
-//  onClick: PropTypes.func.isRequired
 }
 
 export default GuideButton

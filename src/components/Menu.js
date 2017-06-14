@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
 import GuideButton from './GuideButton'
 
 const Menu = ({ displayGuide, onClick }) => {
@@ -10,11 +10,6 @@ const Menu = ({ displayGuide, onClick }) => {
       />
     </div>
   )
-}
-
-Menu.propTypes = {
-//  displayGuide: PropTypes.string.isRequired,
-//  onClick: PropTypes.func.isRequired
 }
 
 export default Menu

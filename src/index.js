@@ -11,13 +11,8 @@ import reducer from './reducers'
 
 import { composeWithDevTools } from 'redux-devtools-extension'
 
+let store = createStore(reducer, composeWithDevTools())
 
-console.log("aaa")
-
-let store = createStore(reducer, composeWithDevTools(
-));
-
-console.log(store)
 render(
   <Provider store={ store }>
      <ReactDeReversi />

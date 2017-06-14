@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
 
 const Square = ({ value, displayGuide, canPlace, onClick }) => {
   const name = value ? value : 'none'
@@ -11,13 +11,6 @@ const Square = ({ value, displayGuide, canPlace, onClick }) => {
       <span className={ name }></span>
     </button>
   )
-}
-
-Square.propTypes = {
-//  value: PropTypes.string.isRequired,
-//  displayGuide: PropTypes.bool.isRequired,
-//  canPlace: PropTypes.bool.isRequired,
-//  onClick: PropTypes.func.isRequired
 }
 
 export default Square

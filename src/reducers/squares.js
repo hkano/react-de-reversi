@@ -29,10 +29,11 @@ function initialSquares() {
 }
 
 const squares = ( state = initialSquaresState, action ) => {
-  console.log(action.type)
   if (action.type !== actionTypes.SQUARE) {
     return state
   }
+
+  const number = action.number
 
   let squares = state.squares
   let squareNumbers = state.squareNumbers
@@ -40,24 +41,24 @@ const squares = ( state = initialSquaresState, action ) => {
 
   const step = squareNumbers.length
 
-  // if (squares[action.number] || !squareModel.canPlace(squares, action.number, step)) {
-  //   return state
-  // }
-//
-  // squares[action.number] = gameModel.color(step)
-  // squares = squareModel.turnSquare(squares, action.number, step)
-  // squareNumbers.push(action.number)
-  // historySquares.push(Object.assign({}, squares))
-//
-  // // skip
-  // for (let i = 1; i <= 2; i++) {
-  //   if (squareModel.canPlaceAny(squares, step + i) || gameModel.isGameEnd(squares, squareNumbers)) {
-  //     break
-  //   } else {
-  //     squareNumbers.push(0)
-  //     historySquares.push(Object.assign({}, squares))
-  //   }
-  // }
+  if (squares[number] || !squareModel.canPlace(squares, number, step)) {
+    return state
+  }
+
+  squares[number] = gameModel.color(step)
+  squares = squareModel.turnSquare(squares, number, step)
+  squareNumbers.push(number)
+  historySquares.push(Object.assign({}, squares))
+
+  // skip
+  for (let i = 1; i <= 2; i++) {
+    if (squareModel.canPlaceAny(squares, step + i) || gameModel.isGameEnd(squares, squareNumbers)) {
+      break
+    } else {
+      squareNumbers.push(0)
+      historySquares.push(Object.assign({}, squares))
+    }
+  }
 
   return {
     ...state,

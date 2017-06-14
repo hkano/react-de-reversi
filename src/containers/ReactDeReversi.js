@@ -15,7 +15,7 @@ import Menu from '../components/Menu'
 
 class ReactDeReversi extends Component {
   render() {
-    const { squares, guide } = this.props
+    const { squares, guide, actions } = this.props
 
     const step = squares.squareNumbers.length
     let winner = null
@@ -94,13 +94,6 @@ class ReactDeReversi extends Component {
   //   $('.Game-info ol').scrollTop(9999);
   // }
 
-  displayGuide() {
-    const displayGuide = this.state.displayGuide;
-    this.setState({
-      displayGuide: !displayGuide
-    });
-  }
-
   jumpTo(step) {
     let squares;
     let squareNumbers = this.state.squareNumbers;
@@ -130,8 +123,6 @@ class ReactDeReversi extends Component {
 }
 
 var mapStateToProps = (state, ownProps) => {
-  console.log(state)
-
   return ({
     squares: state.squares,
     guide: state.guide,
@@ -139,8 +130,6 @@ var mapStateToProps = (state, ownProps) => {
 }
 
 var mapDispatch = (dispatch) => {
-  console.log(dispatch)
-
   return ({
     actions: bindActionCreators(actions, dispatch)
   })

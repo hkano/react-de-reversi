@@ -119,12 +119,20 @@
 }
 
 .game-menu button {
-  background-color: #ccc;
-  border: 1px solid #999;
   height: 30px;
   margin: 0 5px;
   padding: 2px;
   width: 80px;
+}
+
+.game-menu button.guide-button-on {
+  background-color: #fcc;
+  border: 1px solid #f99;
+}
+
+.game-menu button.guide-button-off {
+  background-color: #ccc;
+  border: 1px solid #999;
 }
 
 .game-info {

@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
 import Square from './Square'
 
 import { LINE_COUNT } from '../constants/configurations'
@@ -31,7 +31,7 @@ const Board = ({ squares, step, displayGuide, onClick }) => {
     let rowSquares = [];
     for (let column = 0; column < LINE_COUNT; column++) {
       const squareNumber = row * LINE_COUNT + column + 1;
-      rowSquares.push(renderSquare(squares, squareNumber, squareModel.canPlace(squares, squareNumber, step + 1), displayGuide, onClick));
+      rowSquares.push(renderSquare(squares, squareNumber, squareModel.canPlace(squares, squareNumber, step), displayGuide, onClick));
     }
     boardBody.push(<div key={ "board-body-row-" + (row + 1) } className="body-row">{ rowSquares }</div>);
   }
@@ -48,12 +48,6 @@ const Board = ({ squares, step, displayGuide, onClick }) => {
       </div>
     </div>
   )
-}
-
-Board.propTypes = {
-  squares: PropTypes.object.isRequired,
-  step: PropTypes.number.isRequired,
-  displayGuide: PropTypes.bool.isRequired
 }
 
 export default Board

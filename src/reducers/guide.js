@@ -11,7 +11,7 @@ const guide = ( state = initialGuideState, action ) => {
 
   return {
     ...state,
-    displayGuide: action.value
+    displayGuide: !state.displayGuide
   }
 }
 
