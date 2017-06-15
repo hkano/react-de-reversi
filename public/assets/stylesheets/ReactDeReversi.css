@@ -1,27 +1,41 @@
-.Game {
+.title {
+  text-align: center;
+}
+
+.title-bar {
+  background-color: #393;
+  padding: 10px;
+  color: white;
+}
+
+.title-bar .logo {
+   padding-top: 20px;
+}
+
+.game {
   display: flex;
   flex-direction: row;
   justify-content: center;
   margin-top: 30px;
 }
 
-.Game-board .board {
+.game-board .board {
   margin-left: 20px;
   margin-top: 20px;
   position: relative;
 }
 
-.Game-board .board .body {
+.game-board .board .body {
   border: 10px outset #666;
 }
 
-.Game-board .board .body-row:after {
+.game-board .board .body-row:after {
   clear: both;
   content: "";
   display: table;
 }
 
-.Game-board .board .body-row .square {
+.game-board .board .body-row .square {
   background: #393;
   border: 1px solid #666;
   float: left;
@@ -34,19 +48,19 @@
   width: 34px;
 }
 
-.Game-board .board .body-row .square-o {
+.game-board .board .body-row .square-o {
   background: #3c3;
 }
 
-.Game-board .board .body-row .square-x {
+.game-board .board .body-row .square-x {
   background: #393;
 }
 
-.Game-board .board .body-row .square:focus {
+.game-board .board .body-row .square:focus {
   outline: none;
 }
 
-.Game-board .board .body-row .square .black {
+.game-board .board .body-row .square .black {
   background-color: #000;
   border-radius: 46px;
   display: inline-block;
@@ -56,7 +70,7 @@
   width: 23px;
 }
 
-.Game-board .board .body-row .square .white {
+.game-board .board .body-row .square .white {
   background-color: #fff;
   border-radius: 46px;
   display: inline-block;
@@ -66,17 +80,17 @@
   width: 23px;
 }
 
-.Game-board .board .body-row .square .none {
+.game-board .board .body-row .square .none {
   display: none;
 }
 
-.Game-board .board .row-numbers {
+.game-board .board .row-numbers {
   left: -30px;
   position: absolute;
   top: 18px;
 }
 
-.Game-board .board .row-numbers .row-number {
+.game-board .board .row-numbers .row-number {
   display: block;
   height: 34px;
   margin-top: -1px;
@@ -84,46 +98,54 @@
   width: 34px;
 }
 
-.Game-board .board .column-numbers {
+.game-board .board .column-numbers {
   left: 11px;
   position: absolute;
   top: -24px;
 }
 
-.Game-board .board .column-numbers .column-number {
+.game-board .board .column-numbers .column-number {
   float: left;
   margin-right: -1px;
   text-align: center;
   width: 34px;
 }
 
-.Game-menu {
+.game-menu {
   margin-left: 10px;
   margin-top: 20px;
   text-align: center;
   width: 100%;
 }
 
-.Game-menu button {
-  background-color: #ccc;
-  border: 1px solid #999;
+.game-menu button {
   height: 30px;
   margin: 0 5px;
   padding: 2px;
   width: 80px;
 }
 
-.Game-info {
+.game-menu button.guide-button-on {
+  background-color: #fc6;
+  border: 1px solid #f90;
+}
+
+.game-menu button.guide-button-off {
+  background-color: #ccc;
+  border: 1px solid #999;
+}
+
+.game-info {
   margin-left: 30px;
   width: 180px;
 }
 
-.Game-info span {
+.game-info span {
   font-size: 16px;
   font-weight: bold;
 }
 
-.Game-info span span.black {
+.game-info span span.black {
   background-color: #000;
   border: solid 1px #000;
   border-radius: 28px;
@@ -133,7 +155,7 @@
   width: 14px;
 }
 
-.Game-info span span.white {
+.game-info span span.white {
   background-color: #fff;
   border: solid 1px #666;
   border-radius: 28px;
@@ -143,14 +165,14 @@
   width: 14px;
 }
 
-.Game-info .count {
+.game-info .count {
   font-size: 16px;
   font-weight: bold;
   padding-top: 10px;
   text-align: center;
 }
 
-.Game-info .count span.black {
+.game-info .count span.black {
   background-color: #000;
   border: solid 1px #000;
   border-radius: 28px;
@@ -160,7 +182,7 @@
   width: 14px;
 }
 
-.Game-info .count span.white {
+.game-info .count span.white {
   background-color: #fff;
   border: solid 1px #666;
   border-radius: 28px;
@@ -170,7 +192,7 @@
   width: 14px;
 }
 
-.Game-info ol {
+.game-info ol {
   border: 1px solid #666;
   height: 250px;
   overflow-x: hidden;
@@ -180,26 +202,26 @@
   padding-top: 10px;
 }
 
-.Game-info ol li {
+.game-info ol li {
   height: 22px;
   margin-left: 8px;
 }
 
-.Game-info ol li a {
+.game-info ol li a {
   color: #000;
   text-decoration: none;
 }
 
-.Game-info ol li a:hover {
+.game-info ol li a:hover {
   color: #999;
   text-decoration: underline;
 }
 
-.Game-info ol li a div {
+.game-info ol li a div {
   display: inline;
 }
 
-.Game-info ol li a div span.black {
+.game-info ol li a div span.black {
   background-color: #000;
   border: solid 1px #000;
   border-radius: 28px;
@@ -208,7 +230,7 @@
   width: 12px;
 }
 
-.Game-info ol li a div span.white {
+.game-info ol li a div span.white {
   background-color: #fff;
   border: solid 1px #666;
   border-radius: 24px;
