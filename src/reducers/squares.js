@@ -29,26 +29,34 @@ function initialSquares() {
 }
 
 const squares = ( state = initialSquaresState, action ) => {
-  if (action.type !== actionTypes.SQUARE) {
+  if (action.type !== actionTypes.SQUARE && action.type !== actionTypes.MOVE) {
     return state
   }
 
-  const number = action.number
+  let { squares, squareNumbers, historySquares } = state
+  let step
 
-  let squares = state.squares
-  let squareNumbers = state.squareNumbers
-  let historySquares = state.historySquares
+  if (action.type === actionTypes.SQUARE) {
+    const number = action.number
+    step = squareNumbers.length
 
-  const step = squareNumbers.length
+    if (squares[number] || !squareModel.canPlace(squares, number, step)) {
+      return state
+    }
 
-  if (squares[number] || !squareModel.canPlace(squares, number, step)) {
-    return state
+    squares[number] = gameModel.color(step)
+    squares = squareModel.turnSquare(squares, number, step)
+    squareNumbers.push(number)
+    historySquares.push(Object.assign({}, squares))
   }
 
-  squares[number] = gameModel.color(step)
-  squares = squareModel.turnSquare(squares, number, step)
-  squareNumbers.push(number)
-  historySquares.push(Object.assign({}, squares))
+  if (action.type === actionTypes.MOVE) {
+    step = action.step
+
+    squares = Object.assign({}, historySquares[step])
+    squareNumbers = squareNumbers.slice(0, step + 1)
+    historySquares = historySquares.slice(0, step + 1)
+  }
 
   // skip
   for (let i = 1; i <= 2; i++) {

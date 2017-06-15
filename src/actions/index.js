@@ -12,3 +12,10 @@ export const onGuideClick = () => {
     type: actionTypes.GUIDE
   })
 }
+
+export const onMoveClick = (step) => {
+  return ({
+    type: actionTypes.MOVE,
+    step
+  })
+}

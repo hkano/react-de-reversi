@@ -4,7 +4,7 @@ import guide from './guide.js'
 
 const reducer = combineReducers({
   squares,
-  guide
+  guide,
 })
 
 export default reducer
