@@ -4,15 +4,21 @@
   "private": true,
   "homepage": "http://hkano.github.io/react-de-reversi",
   "devDependencies": {
-    "react-scripts": "0.8.4"
+    "gh-pages": "^1.0.0",
+    "react-scripts": "^1.0.7",
+    "redux-devtools-extension": "^2.13.2"
   },
   "dependencies": {
-    "react": "^15.4.1",
-    "react-dom": "^15.4.1"
+    "jquery": "^3.2.1",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "react-redux": "^5.0.5",
+    "redux": "^3.6.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "deploy": "yarn run build && gh-pages -d build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   }
