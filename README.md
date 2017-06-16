@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="http://hkano.github.io/react-de-reversi">
-    <img alt="react-de-reversi" src="https://hkano.github.io/react-de-reversi/reversi.png" width="400" height="350">
+    <img alt="react-de-reversi" src="https://hkano.github.io/react-de-reversi/reversi.png" width="400" height="350"><br>
     http://hkano.github.io/react-de-reversi
   </a>
 </p>
