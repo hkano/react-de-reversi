@@ -2,9 +2,9 @@ import React from 'react'
 import Moves from './Moves'
 import * as gameModel from '../models/game'
 
-const status = (squares, squareNumbers) => {
-  const step = squareNumbers.length
-  if (gameModel.isGameEnd(squares, squareNumbers)) {
+const status = (squares, numbers) => {
+  const step = numbers.length
+  if (gameModel.isGameEnd(squares, numbers)) {
     return gameModel.calculateWinner(squares)
   }
   return (
@@ -16,14 +16,14 @@ const status = (squares, squareNumbers) => {
   )
 }
 
-const Info = ({ squares, squareNumbers, onClick }) => (
+const Info = ({ squares, numbers, onClick }) => (
   <div className="info">
-    <span>{ status(squares, squareNumbers) }</span>
+    <span>{ status(squares, numbers) }</span>
     <div className="count">
       <span className="black"></span> { gameModel.countBlack(squares) } - { gameModel.countWhite(squares) } <span className="white"></span>
     </div>
     <Moves
-      squareNumbers={ squareNumbers }
+      numbers={ numbers }
       onClick={ onClick }
     />
   </div>

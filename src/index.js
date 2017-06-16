@@ -1,6 +1,6 @@
-import '../public/assets/stylesheets/sanitize.min.css'
-import '../public/assets/stylesheets/index.css'
-import '../public/assets/stylesheets/ReactDeReversi.css'
+import './assets/stylesheets/sanitize.min.css'
+import './assets/stylesheets/index.css'
+import './assets/stylesheets/ReactDeReversi.css'
 
 import React from 'react'
 import { render } from 'react-dom'

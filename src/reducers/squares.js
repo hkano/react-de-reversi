@@ -1,28 +1,29 @@
-import { LINE_COUNT, INITIAL_BLACK_SQUARE_NUMBERS, INITIAL_WHITE_SQUARE_NUMBERS } from '../constants/configurations'
+import { LINE_COUNT, INITIAL_BLACK_NUMBERS, INITIAL_WHITE_NUMBERS } from '../constants/configurations'
 import { BLACK, WHITE } from '../constants/discColors'
 import * as actionTypes from '../constants/actionTypes'
 import * as gameModel from '../models/game'
 import * as squareModel from '../models/square'
 
 const initialSquaresState = {
-  squares: initialSquares(),
-  squareNumbers: [0],
-  historySquares: [Object.assign({}, initialSquares())]
+  histories: [initialSquares()],
+  numbers: [0],
 }
 
 function initialSquares() {
   let squares = {}
-  for (let i = 0; i < Math.pow(LINE_COUNT, 2); i++) {
+  let i = 0
+  while (i < Math.pow(LINE_COUNT, 2)) {
     squares[i + 1] = null
+    i++
   }
-  for (var initial_black_square_number in INITIAL_BLACK_SQUARE_NUMBERS) {
-    if (INITIAL_BLACK_SQUARE_NUMBERS.hasOwnProperty(initial_black_square_number)) {
-      squares[INITIAL_BLACK_SQUARE_NUMBERS[initial_black_square_number]] = BLACK
+  for (let initial_black_number in INITIAL_BLACK_NUMBERS) {
+    if (INITIAL_BLACK_NUMBERS.hasOwnProperty(initial_black_number)) {
+      squares[INITIAL_BLACK_NUMBERS[initial_black_number]] = BLACK
     }
   }
-  for (var initial_white_square_number in INITIAL_WHITE_SQUARE_NUMBERS) {
-    if (INITIAL_WHITE_SQUARE_NUMBERS.hasOwnProperty(initial_white_square_number)) {
-      squares[INITIAL_WHITE_SQUARE_NUMBERS[initial_white_square_number]] = WHITE
+  for (let initial_white_number in INITIAL_WHITE_NUMBERS) {
+    if (INITIAL_WHITE_NUMBERS.hasOwnProperty(initial_white_number)) {
+      squares[INITIAL_WHITE_NUMBERS[initial_white_number]] = WHITE
     }
   }
   return squares
@@ -33,12 +34,13 @@ const squares = ( state = initialSquaresState, action ) => {
     return state
   }
 
-  let { squares, squareNumbers, historySquares } = state
+  let { histories, numbers } = state
+  let squares = Object.assign({}, histories[histories.length - 1])
   let step
 
   if (action.type === actionTypes.SQUARE) {
     const number = action.number
-    step = squareNumbers.length
+    step = numbers.length
 
     if (squares[number] || !squareModel.canPlace(squares, number, step)) {
       return state
@@ -46,33 +48,34 @@ const squares = ( state = initialSquaresState, action ) => {
 
     squares[number] = gameModel.color(step)
     squares = squareModel.turnSquare(squares, number, step)
-    squareNumbers.push(number)
-    historySquares.push(Object.assign({}, squares))
+    histories.push(squares)
+    numbers.push(number)
   }
 
   if (action.type === actionTypes.MOVE) {
     step = action.step
 
-    squares = Object.assign({}, historySquares[step])
-    squareNumbers = squareNumbers.slice(0, step + 1)
-    historySquares = historySquares.slice(0, step + 1)
+    squares = histories[step]
+    histories = histories.slice(0, step + 1)
+    numbers = numbers.slice(0, step + 1)
   }
 
   // skip
-  for (let i = 1; i <= 2; i++) {
-    if (squareModel.canPlaceAny(squares, step + i) || gameModel.isGameEnd(squares, squareNumbers)) {
+  let i = 1
+  while (i <= 2) {
+    if (squareModel.canPlaceAny(squares, step + i) || gameModel.isGameEnd(squares, numbers)) {
       break
     } else {
-      squareNumbers.push(0)
-      historySquares.push(Object.assign({}, squares))
+      histories.push(squares)
+      numbers.push(0)
+      i++
     }
   }
 
   return {
     ...state,
-    squares: squares,
-    squareNumbers: squareNumbers,
-    historySquares: historySquares
+    histories: histories,
+    numbers: numbers,
   }
 }
 

@@ -11,8 +11,8 @@ export function color(step) {
 
 export function countBlack(squares) {
   let count = 0
-  for (let key in squares) {
-    if (squares[key] === BLACK) {
+  for (let i in squares) {
+    if (squares[i] === BLACK) {
       count++
     }
   }
@@ -21,8 +21,8 @@ export function countBlack(squares) {
 
 export function countWhite(squares) {
   let count = 0
-  for (let key in squares) {
-    if (squares[key] === WHITE) {
+  for (let i in squares) {
+    if (squares[i] === WHITE) {
       count++
     }
   }
@@ -36,22 +36,22 @@ export function isBlackMove(step) {
   return !!(step % 2)
 }
 
-export function isGameEnd(squares, squareNumbers) {
-  if (squareNumbers[squareNumbers.length - 1] === 0 && squareNumbers[squareNumbers.length - 2] === 0) {
+export function isGameEnd(squares, numbers) {
+  if (numbers[numbers.length - 1] === 0 && numbers[numbers.length - 2] === 0) {
     return true
   }
   return isFilled(squares)
 }
 
 export function calculateWinner(squares) {
-  const blackCount = countBlack(squares);
-  const whiteCount = countWhite(squares);
+  const blackCount = countBlack(squares)
+  const whiteCount = countWhite(squares)
   if (blackCount > whiteCount) {
-    return 'Winner: ' + BLACK.toUpperCase() + ' !!';
+    return 'Winner: ' + BLACK.toUpperCase() + ' !!'
   } else if (blackCount < whiteCount) {
-    return 'Winner: ' + WHITE.toUpperCase() + ' !!';
+    return 'Winner: ' + WHITE.toUpperCase() + ' !!'
   } else {
-    return 'Draw....';
+    return 'Draw....'
   }
 }
 

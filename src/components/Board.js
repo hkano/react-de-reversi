@@ -6,13 +6,13 @@ import { ROW_STRINGS, COLUMN_STRINGS } from '../constants/stgings'
 
 import * as squareModel from '../models/square'
 
-const renderSquare = (squares, squareNumber, canPlace, displayGuide, onClick) => {
+const renderSquare = (squares, number, canPlace, displayGuide, onClick) => {
   return <Square
-    key={ "square-" + squareNumber }
-    value={ squares[squareNumber] }
+    key={ "square-" + number }
+    value={ squares[number] }
     canPlace={ canPlace }
     displayGuide={ displayGuide }
-    onClick={ () => onClick(squareNumber) }
+    onClick={ () => onClick(number) }
   />
 }
 
@@ -21,20 +21,29 @@ const Board = ({ squares, step, displayGuide, onClick }) => {
   let boardRowNumbers = []
   let boardColumnNumbers = []
 
-  for (let row = 0; row < LINE_COUNT; row++) {
-    boardRowNumbers.push(<div key={ "board-row-number-" + (row + 1) } className="row-number">{ ROW_STRINGS[row] }</div>);
+  let row = 0
+  while (row < LINE_COUNT) {
+    boardRowNumbers.push(<div key={ "board-row-number-" + (row + 1) } className="row-number">{ ROW_STRINGS[row] }</div>)
+    row++
   }
-  for (let column = 0; column < LINE_COUNT; column++) {
-    boardColumnNumbers.push(<div key={ "board-column-number-" + (column + 1) } className="column-number">{ COLUMN_STRINGS[column] }</div>);
+  let column = 0
+  while (column < LINE_COUNT) {
+    boardColumnNumbers.push(<div key={ "board-column-number-" + (column + 1) } className="column-number">{ COLUMN_STRINGS[column] }</div>)
+    column++
   }
-  for (let row = 0; row < LINE_COUNT; row++) {
-    let rowSquares = [];
-    for (let column = 0; column < LINE_COUNT; column++) {
-      const squareNumber = row * LINE_COUNT + column + 1;
-      rowSquares.push(renderSquare(squares, squareNumber, squareModel.canPlace(squares, squareNumber, step), displayGuide, onClick));
+  row = 0
+  while (row < LINE_COUNT) {
+    let rowSquares = []
+    column = 0
+    while (column < LINE_COUNT) {
+      const number = row * LINE_COUNT + column + 1
+      rowSquares.push(renderSquare(squares, number, squareModel.canPlace(squares, number, step), displayGuide, onClick))
+      column++
     }
-    boardBody.push(<div key={ "board-body-row-" + (row + 1) } className="body-row">{ rowSquares }</div>);
+    boardBody.push(<div key={ "board-body-row-" + (row + 1) } className="body-row">{ rowSquares }</div>)
+    row++
   }
+
   return (
     <div className="board">
       <div className="column-numbers">

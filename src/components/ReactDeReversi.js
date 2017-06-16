@@ -10,7 +10,8 @@ import $ from 'jquery'
 class ReactDeReversi extends Component {
   render() {
     const { squares, guide, actions } = this.props
-    const step = squares.squareNumbers.length
+    const currentSquares = squares.histories[squares.histories.length - 1]
+    const step = squares.numbers.length
     return (
       <div className="ReactDeReversi">
         <div className="title">
@@ -19,10 +20,10 @@ class ReactDeReversi extends Component {
         <div className="game">
           <div className="game-board">
             <Board
-              squares={ squares.squares }
+              squares={ currentSquares }
               step={ step }
               displayGuide={ guide.displayGuide }
-              onClick={ (squareNumber) => actions.onSquareClick(squareNumber) }
+              onClick={ (number) => actions.onSquareClick(number) }
             />
             <div className="game-menu">
               <Menu
@@ -33,8 +34,8 @@ class ReactDeReversi extends Component {
           </div>
           <div className="game-info">
             <Info
-              squares={ squares.squares }
-              squareNumbers={ squares.squareNumbers }
+              squares={ currentSquares }
+              numbers={ squares.numbers }
               onClick={ (step) => actions.onMoveClick(step) }
             />
           </div>

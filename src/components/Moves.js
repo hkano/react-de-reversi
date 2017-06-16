@@ -2,34 +2,34 @@ import React from 'react'
 import * as gameModel from '../models/game'
 import * as squareModel from '../models/square'
 
-const description = (squareNumber, index) => {
+const description = (number, index) => {
   if (index === 0) {
     return 'Game start'
   }
   return (
     <div>
-      { squareNumber > 0 ? 'Move: ' : 'Skip: ' }
+      { number > 0 ? 'Move: ' : 'Skip: ' }
       <span className={ gameModel.color(index) }></span>
     </div>
   )
 }
 
-const moves = (squareNumbers, onClick) => {
-  return squareNumbers.map((squareNumber, index) => {
+const moves = (numbers, onClick) => {
+  return numbers.map((number, index) => {
     return (
       <li key={index} value={index}>
-        <a href="#" onClick={ () => onClick(index) }>
-          { description(squareNumber, index) }
+        <a onClick={ () => onClick(index) }>
+          { description(number, index) }
         </a>
-        { squareNumber > 0 ? ' (' + squareModel.position(squareNumber) + ') ' : '' }
+        { number > 0 ? ' (' + squareModel.position(number) + ') ' : '' }
       </li>
     )
   })
 }
 
-const Moves = ({ squareNumbers, onClick }) => (
+const Moves = ({ numbers, onClick }) => (
   <div className="moves">
-    <ol>{ moves(squareNumbers, onClick) }</ol>
+    <ol>{ moves(numbers, onClick) }</ol>
   </div>
 )
 

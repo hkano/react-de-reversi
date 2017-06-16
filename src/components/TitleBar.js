@@ -1,5 +1,5 @@
 import React from 'react'
-import logo from '../../public/assets/images/react-de-reversi.png'
+import logo from '../assets/images/react-de-reversi.png'
 
 const TitleBar = () => (
   <div className="title-bar">
