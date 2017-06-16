@@ -34,7 +34,7 @@ $ HTTPS=true yarn start
 
 ```
 $ # Be Careful!!
-$ sls deploy --profile production/serverless --stage production
+$ yarn run deploy
 ```
 
 ## Thank
