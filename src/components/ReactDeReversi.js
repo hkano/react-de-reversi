@@ -4,6 +4,7 @@ import TitleBar from '../components/TitleBar'
 import Board from '../components/Board'
 import Menu from '../components/Menu'
 import Info from '../components/Info'
+import FooterAds from '../components/FooterAds'
 
 import $ from 'jquery'
 
@@ -39,6 +40,9 @@ class ReactDeReversi extends Component {
               onClick={ (step) => actions.onMoveClick(step) }
             />
           </div>
+        </div>
+        <div className="footer">
+          <FooterAds />
         </div>
       </div>
     )

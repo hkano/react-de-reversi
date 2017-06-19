@@ -29,6 +29,10 @@
   border: 10px outset #666;
 }
 
+.game-board .board .body-row {
+  width: 264px;
+}
+
 .game-board .board .body-row:after {
   clear: both;
   content: "";
@@ -137,12 +141,13 @@
 
 .game-info {
   margin-left: 30px;
-  width: 180px;
+  width: 160px;
 }
 
 .game-info span {
   font-size: 16px;
   font-weight: bold;
+  white-space: nowrap;
 }
 
 .game-info span span.black {
@@ -237,4 +242,19 @@
   display: inline-flex;
   height: 12px;
   width: 12px;
+}
+
+.footer {
+  text-align: center;
+}
+
+.footer-ads {
+  margin: 20px 0;
+}
+
+.footer-ads ins {
+  display: block;
+  height: 60px;
+  margin: 0 auto;
+  width: 468px;
 }
