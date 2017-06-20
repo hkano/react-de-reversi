@@ -13,6 +13,13 @@ export const onGuideClick = () => {
   })
 }
 
+export const onComputerClick = (color) => {
+  return ({
+    type: actionTypes.COMPUTER,
+    color
+  })
+}
+
 export const onMoveClick = (step) => {
   return ({
     type: actionTypes.MOVE,

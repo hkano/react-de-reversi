@@ -126,15 +126,15 @@
   height: 30px;
   margin: 0 5px;
   padding: 2px;
-  width: 80px;
+  width: 85px;
 }
 
-.game-menu button.guide-button-on {
+.game-menu button.button-on {
   background-color: #fc6;
   border: 1px solid #f90;
 }
 
-.game-menu button.guide-button-off {
+.game-menu button.button-off {
   background-color: #ccc;
   border: 1px solid #999;
 }

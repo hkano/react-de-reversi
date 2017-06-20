@@ -10,7 +10,7 @@ import $ from 'jquery'
 
 class ReactDeReversi extends Component {
   render() {
-    const { squares, guide, actions } = this.props
+    const { squares, guide, computer, actions } = this.props
     const currentSquares = squares.histories[squares.histories.length - 1]
     const step = squares.numbers.length
     return (
@@ -29,7 +29,10 @@ class ReactDeReversi extends Component {
             <div className="game-menu">
               <Menu
                 displayGuide={ guide.displayGuide }
-                onClick={ () => actions.onGuideClick() }
+                blackComputer={ computer.black }
+                whiteComputer={ computer.white }
+                onGuideClick={ () => actions.onGuideClick() }
+                onComputerClick={ (color) => actions.onComputerClick(color) }
               />
             </div>
           </div>

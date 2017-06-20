@@ -7,6 +7,7 @@ import ReactDeReversi from '../components/ReactDeReversi'
 const mapStateToProps = (state) => ({
   squares: state.squares,
   guide: state.guide,
+  computer: state.computer,
 })
 
 const mapDispatch = (dispatch) => ({
